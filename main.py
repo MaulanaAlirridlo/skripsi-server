@@ -142,7 +142,7 @@ allTimeC = allTimeCountC(df, df['label'], random)
 # API API API API API
 app = Flask(__name__)
 CORS(app)
-@app.route('/all', methods=['GET'])
+@app.route('/', methods=['GET'])
 def getAll():
   return jsonify({
     'status'          : 200,
