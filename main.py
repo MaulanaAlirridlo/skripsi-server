@@ -19,7 +19,7 @@ import pandas as pd
 
 random = 293
 
-#baca data
+# baca data
 print('baca data')
 df = pd.read_csv('./data/cek.csv')
 
@@ -29,11 +29,11 @@ dc = dataCleaning(cf)
 sr = stopwordRemoval(dc)
 stem = stemmer(sr)
 preprocessingData = pd.DataFrame({
-                      'caseFolding' : cf,
-                      'dataCleaning' : dc,
-                      'stopwordRemoval' : sr,
-                      'stemming' : stem
-                    })
+    'caseFolding': cf,
+    'dataCleaning': dc,
+    'stopwordRemoval': sr,
+    'stemming': stem
+})
 cleanTweet = stem
 
 print('tf-idf')
@@ -42,17 +42,17 @@ tfIdf = tfIdfProcess(cleanTweet)
 print('translate')
 engCleanTweet = []
 for s in cleanTweet:
-  engCleanTweet.append(translate(s))
+    engCleanTweet.append(translate(s))
 
 print('lbf')
 neg = []
 pos = []
 neu = []
 for s in engCleanTweet:
-  lbf = lbfProcess(s)
-  neg.append(lbf['neg'])
-  pos.append(lbf['pos'])
-  neu.append(lbf['neu'])
+    lbf = lbfProcess(s)
+    neg.append(lbf['neg'])
+    pos.append(lbf['pos'])
+    neu.append(lbf['neu'])
 
 print('bow')
 bow = bowProcess(cleanTweet)
@@ -66,7 +66,8 @@ a = [tfIdf, neg, pos, neu]
 a = np.array(a, dtype=object)
 a = a.T
 newA = pd.DataFrame(flatArray(a))
-xTrainA, xTestA, yTrainA, yTestA = train_test_split(newA, df['label'], test_size=0.3, random_state=random)
+xTrainA, xTestA, yTrainA, yTestA = train_test_split(
+    newA, df['label'], test_size=0.3, random_state=random)
 tweetTrainA = [cleanTweet[i] for i in xTrainA.index]
 tweetTestA = [cleanTweet[i] for i in xTestA.index]
 
@@ -75,7 +76,8 @@ b = [tfIdf, bow]
 b = np.array(b, dtype=object)
 b = np.transpose(b, (1, 0, 2))
 newB = pd.DataFrame(flatArray(b))
-xTrainB, xTestB, yTrainB, yTestB = train_test_split(newB, df['label'], test_size=0.3, random_state=random)
+xTrainB, xTestB, yTrainB, yTestB = train_test_split(
+    newB, df['label'], test_size=0.3, random_state=random)
 tweetTrainB = [cleanTweet[i] for i in xTrainB.index]
 tweetTestB = [cleanTweet[i] for i in xTestB.index]
 
@@ -84,7 +86,8 @@ c = [tfIdf, ef]
 c = np.array(c, dtype=object)
 c = c.T
 newC = pd.DataFrame(flatArray(c))
-xTrainC, xTestC, yTrainC, yTestC = train_test_split(newC, df['label'], test_size=0.3, random_state=random)
+xTrainC, xTestC, yTrainC, yTestC = train_test_split(
+    newC, df['label'], test_size=0.3, random_state=random)
 tweetTrainC = [cleanTweet[i] for i in xTrainC.index]
 tweetTestC = [cleanTweet[i] for i in xTestC.index]
 
@@ -144,63 +147,63 @@ app = Flask(__name__)
 CORS(app)
 @app.route('/', methods=['GET'])
 def getAll():
-  return jsonify({
-    'status'          : 200,
-    'initData'        : df.to_dict(orient='records'),
-    'preprocessing'   : preprocessingData.to_dict(orient='records'),
-    'cleanTweet'      : cleanTweet.tolist(),
-    'tfIdf'           : tfIdf,
-    'engCleanTweet'   : engCleanTweet,
-    'neg'             : neg,
-    'pos'             : pos,
-    'neu'             : neu,
-    'bow'             : bow,
-    'ef'              : ef,
-    'newA'            : newA.values.tolist(),
-    'tweetTrainA'     : tweetTrainA,
-    'tweetTestA'      : tweetTestA,
-    'tweetTrainB'     : tweetTrainB,
-    'tweetTestB'      : tweetTestB,
-    'tweetTrainC'     : tweetTrainC,
-    'tweetTestC'      : tweetTestC,
-    'xTrainA'         : xTrainA.values.tolist(),
-    'xTestA'          : xTestA.values.tolist(),
-    'yTrainA'         : yTrainA.tolist(),
-    'yTestA'          : yTestA.tolist(),
-    'svmA'            : svmA.tolist(),
-    'matrixA'         : matrixA.tolist(),
-    'accuracyA'       : accuracyA.tolist(),
-    'precisionA'      : precisionA.tolist(),
-    'recallA'         : recallA.tolist(),
-    'f1A'             : f1A.tolist(),
-    'newB'            : newB.values.tolist(),
-    'xTrainB'         : xTrainB.values.tolist(),
-    'xTestB'          : xTestB.values.tolist(),
-    'yTrainB'         : yTrainB.tolist(),
-    'yTestB'          : yTestB.tolist(),
-    'svmB'            : svmB.tolist(),
-    'matrixB'         : matrixB.tolist(),
-    'accuracyB'       : accuracyB.tolist(),
-    'precisionB'      : precisionB.tolist(),
-    'recallB'         : recallB.tolist(),
-    'f1B'             : f1B.tolist(),
-    'newC'            : newC.values.tolist(),
-    'xTrainC'         : xTrainC.values.tolist(),
-    'xTestC'          : xTestC.values.tolist(),
-    'yTrainC'         : yTrainC.tolist(),
-    'yTestC'          : yTestC.tolist(),
-    'svmC'            : svmC.tolist(),
-    'matrixC'         : matrixC.tolist(),
-    'accuracyC'       : accuracyC.tolist(),
-    'precisionC'      : precisionC.tolist(),
-    'recallC'         : recallC.tolist(),
-    'f1C'             : f1C.tolist(),
-    'cpuTimeA'        : cpuTimeA,
-    'allTimeA'        : allTimeA,
-    'cpuTimeB'        : cpuTimeB,
-    'allTimeB'        : allTimeB,
-    'cpuTimeC'        : cpuTimeC,
-    'allTimeC'        : allTimeC,
+    return jsonify({
+        'status': 200,
+        'initData': df.to_dict(orient='records'),
+        'preprocessing': preprocessingData.to_dict(orient='records'),
+        'cleanTweet': cleanTweet.tolist(),
+        'tfIdf': tfIdf,
+        'engCleanTweet': engCleanTweet,
+        'neg': neg,
+        'pos': pos,
+        'neu': neu,
+        'bow': bow,
+        'ef': ef,
+        'newA': newA.values.tolist(),
+        'tweetTrainA': tweetTrainA,
+        'tweetTestA': tweetTestA,
+        'tweetTrainB': tweetTrainB,
+        'tweetTestB': tweetTestB,
+        'tweetTrainC': tweetTrainC,
+        'tweetTestC': tweetTestC,
+        'xTrainA': xTrainA.values.tolist(),
+        'xTestA': xTestA.values.tolist(),
+        'yTrainA': yTrainA.tolist(),
+        'yTestA': yTestA.tolist(),
+        'svmA': svmA.tolist(),
+        'matrixA': matrixA.tolist(),
+        'accuracyA': accuracyA.tolist(),
+        'precisionA': precisionA.tolist(),
+        'recallA': recallA.tolist(),
+        'f1A': f1A.tolist(),
+        'newB': newB.values.tolist(),
+        'xTrainB': xTrainB.values.tolist(),
+        'xTestB': xTestB.values.tolist(),
+        'yTrainB': yTrainB.tolist(),
+        'yTestB': yTestB.tolist(),
+        'svmB': svmB.tolist(),
+        'matrixB': matrixB.tolist(),
+        'accuracyB': accuracyB.tolist(),
+        'precisionB': precisionB.tolist(),
+        'recallB': recallB.tolist(),
+        'f1B': f1B.tolist(),
+        'newC': newC.values.tolist(),
+        'xTrainC': xTrainC.values.tolist(),
+        'xTestC': xTestC.values.tolist(),
+        'yTrainC': yTrainC.tolist(),
+        'yTestC': yTestC.tolist(),
+        'svmC': svmC.tolist(),
+        'matrixC': matrixC.tolist(),
+        'accuracyC': accuracyC.tolist(),
+        'precisionC': precisionC.tolist(),
+        'recallC': recallC.tolist(),
+        'f1C': f1C.tolist(),
+        'cpuTimeA': cpuTimeA,
+        'allTimeA': allTimeA,
+        'cpuTimeB': cpuTimeB,
+        'allTimeB': allTimeB,
+        'cpuTimeC': cpuTimeC,
+        'allTimeC': allTimeC,
     })
 
 if __name__ == '__main__':
