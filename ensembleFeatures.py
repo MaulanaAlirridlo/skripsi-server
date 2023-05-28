@@ -209,7 +209,7 @@ def F35(doc):
 
 def F36(doc):
     f24 = F24(doc)
-    return (F28(doc)/f24)*100 if f24 != 0 else 0
+    return (F30(doc)/f24)*100 if f24 != 0 else 0
 
 def F37(doc):
     pos = sp(doc)
