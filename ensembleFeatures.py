@@ -219,20 +219,19 @@ def F37(doc):
             count += 1
     return count
 
-def efProcess(tweetList):
+def efProcess(tweetList, engTweet):
     ensemble = []
-    for doc in tweetList:
-        enDoc = translate(doc)
+    for i, doc in enumerate(tweetList):
         ensemble.append([F1(doc), F2(doc), F3(doc), F4(doc), F5(doc), F6(doc),
                          F7(doc), F8(doc), F9(doc), F10(
-                             doc), F11(enDoc), F12(enDoc),
+                             doc), F11(engTweet[i]), F12(engTweet[i]),
                          F13(doc), F14(doc), F15(doc), F16(
                              doc), F17(doc), F18(doc),
                          F19(doc), F20(doc), F21(doc), F22(
-                             doc), F23(enDoc), F24(enDoc),
-                         F25(enDoc), F26(enDoc), F27(enDoc), F28(
-                             enDoc), F29(enDoc), F30(enDoc),
+                             doc), F23(engTweet[i]), F24(engTweet[i]),
+                         F25(engTweet[i]), F26(engTweet[i]), F27(engTweet[i]), F28(
+                             engTweet[i]), F29(engTweet[i]), F30(engTweet[i]),
                          F31(doc), F32(doc), F33(doc), F34(
                              doc), F35(doc), F36(doc),
-                         F37(enDoc)])
+                         F37(engTweet[i])])
     return ensemble

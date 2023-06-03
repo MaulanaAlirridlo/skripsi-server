@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import time
 
-def cpuTimeCountC(df, label, random):
+def cpuTimeCountC(df, label, random, engTweet):
   start_time = time.process_time()
   cf = caseFolding(df['tweet'])
   dc = dataCleaning(cf)
@@ -29,7 +29,7 @@ def cpuTimeCountC(df, label, random):
 
   tfIdf = tfIdfProcess(cleanTweet)
 
-  ef = efProcess(df['tweet'])
+  ef = efProcess(df['tweet'], engTweet)
 
   # tf-idf + ensemble features
   c = [tfIdf, ef]
@@ -44,7 +44,7 @@ def cpuTimeCountC(df, label, random):
   end_time = time.process_time()
   return end_time - start_time
 
-def allTimeCountC(df, label, random):
+def allTimeCountC(df, label, random, engTweet):
   start_time = time.time()
   cf = caseFolding(df['tweet'])
   dc = dataCleaning(cf)
@@ -60,7 +60,7 @@ def allTimeCountC(df, label, random):
 
   tfIdf = tfIdfProcess(cleanTweet)
 
-  ef = efProcess(df['tweet'])
+  ef = efProcess(df['tweet'], engTweet)
 
   # tf-idf + ensemble features
   c = [tfIdf, ef]
