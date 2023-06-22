@@ -18,12 +18,11 @@ from flask_cors import CORS
 import pandas as pd
 
 random = 42
-k = 5
+k = 3
 
 # baca data
 print('baca data')
-# df = pd.read_csv('./data/300 data.csv')
-df = pd.read_csv('./data/cek.csv')
+df = pd.read_csv('./data/6 data.csv')
 
 print('preprocessing')
 cf = caseFolding(df['tweet'])
@@ -61,37 +60,23 @@ for s in engCleanTweet:
 print('ef')
 ef = efProcess(df['tweet'], engTweet)
 
+indeks = [0, 2, 3, 5]
+
 print('mengolah data')
 # tf-idf + lexicon
 a = [tfIdf, neg, pos, neu]
 a = np.array(a, dtype=object)
 a = a.T
 newA = pd.DataFrame(flatArray(a))
+svmA = svmProcess([newA[i] for i in indeks], [df['label'][i] for i in indeks], [newA[4], newA[1]])
 
 # tf-idf + ensemble features
 c = [tfIdf, ef]
 c = np.array(c, dtype=object)
 c = c.T
 newC = pd.DataFrame(flatArray(c))
+svmC = svmProcess([newC[i] for i in indeks], [df['label'][i] for i in indeks], [newC[4], newC[1]])
 
-# k-fold cross validation
-# clf = svm.SVC(kernel='poly')
-# clf = svm.SVC(kernel='rbf')
-clf = svm.SVC(kernel='poly', degree=2, C=1)
-scoresA = cross_val_score(clf, newA, df['label'], cv=k)
-scoresC = cross_val_score(clf, newC, df['label'], cv=k)
-scoresD = cross_val_score(clf, tfIdf, df['label'], cv=k)
-mean_scoreA = scoresA.mean()
-mean_scoreC = scoresC.mean()
-mean_scoreD = scoresD.mean()
-
-# print('mulai waktu A')
-cpuTimeA = cpuTimeCountA(df, engCleanTweet, df['label'], random)
-allTimeA = allTimeCountA(df, engCleanTweet, df['label'], random)
-
-# print('mulai waktu C')
-cpuTimeC = cpuTimeCountC(df, df['label'], random, engTweet)
-allTimeC = allTimeCountC(df, df['label'], random, engTweet)
 
 # API API API API API
 app = Flask(__name__)
@@ -111,16 +96,9 @@ def getAll():
         'ef': ef,
         'newA': newA.values.tolist(),
         'newC': newC.values.tolist(),
-        'scoresA': scoresA.tolist(),
-        'scoresC': scoresC.tolist(),
-        'scoresD': scoresD.tolist(),
-        'mean_scoreA': mean_scoreA,
-        'mean_scoreC': mean_scoreC,
-        'mean_scoreD': mean_scoreD,
-        'cpuTimeA': cpuTimeA,
-        'allTimeA': allTimeA,
-        'cpuTimeC': cpuTimeC,
-        'allTimeC': allTimeC,
+        'svmA' : svmA.tolist(),
+        'svmC' : svmC.tolist()
+
     })
 
 if __name__ == '__main__':
